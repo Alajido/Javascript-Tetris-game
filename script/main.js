@@ -4,11 +4,11 @@ const grid = document.querySelector(`.grid`);
 const squares = Array.from(document.querySelectorAll(`.grid div`));
 // the width variable
 const width = 10;
-// squares.forEach(value => {
-//     if (value.classList.contains(`taken`)) {
-//         value.style.background = 'red'
-//     }
-// })
+squares.forEach(value => {
+    if (value.classList.contains(`taken`)) {
+        value.style.background = 'red'
+    }
+})
 
 // all the tetrominoes shapes
 const lTetromino = [
@@ -27,7 +27,8 @@ const zTetromino = [
 
 const tTetromino = [
     [1, width, width+1, width+2],
-    [1, width, width+2, width*2+1],
+    [1, width+1, width*2+1, width+2],
+    // [1, width, width+2, width*2+1],
     [width, width+1, width+2, width*2+1],
     [1,width,width+1, width*2+1]
 ];
@@ -69,15 +70,27 @@ function draw() {
     })
    
 };
+
+// function for undrawing the tetriminoes shapes
 function undraw() {
     current.forEach(index => {
         squares[currentPosition + index].classList.remove(`tetromino`)
     })
 }
 
-// for testing purpose
-// draw()
-const timing = setInterval(moveDown, 1000);
+
+function control(e) {
+    if (e.keyCode === 37) {
+        moveLeft()
+    } else if (e.keyCode === 38) {
+        rotate()
+    } else if (e.keyCode === 39) {
+        moveRight()
+    } else if (e.keyCode === 40) {
+        moveDown()
+    }
+}
+document.addEventListener(`keyup`, control)
 
 function moveDown() {
     undraw()
@@ -86,44 +99,13 @@ function moveDown() {
     draw() 
     stopWhenTouchAnother() 
 }
+const timing = setInterval(moveDown, 1000);
 
-function control(e) {
-    if (e.keyCode === 37) {
-        moveLeft()
-    } else if (e.keyCode === 38) {
-        // rotate()
-    } else if (e.keyCode === 39) {
-        moveRight()
-    } else if (e.keyCode === 40) {
-        moveDown()
-    }
-}
 
-document.addEventListener(`keyup`, control)
-
-// stoping at the bottom of the game board
-function stopWhenTouchAnother() {
-    // same as current random choice if some of its index inside the whole array that forms the tetriminoes
-    // postion of 4 + its index + 10 will have a class of taken.
-    if (current.some(index => squares[currentPosition + index + width].classList.contains(`taken`))) {
-        // if the condition is true, so convert all the whole index to a class of taken.
-        current.forEach(index => squares[currentPosition + index].classList.add(`taken`))
-
-        // start a new tetrimino by making a random selection
-        random = Math.floor(Math.random() * theTetrominoes.length);
-        // same as current = const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
-        // postion of random selection postion of 0
-        current = theTetrominoes[random][currentRotation]
-        currentPosition = 4
-        draw()
-    }
-
-}
-draw()
 // move left function
 function moveLeft() {
     undraw();
-
+    // if any of the shape of the current tetrimino has riched to an index when divided by 10 will give 0 as a remainder
     const leftEdge = current.some(index => [currentPosition + index] % width === 0);
     console.log(leftEdge)
     if (!leftEdge) currentPosition -=1;
@@ -141,10 +123,11 @@ function moveLeft() {
 function moveRight() {
     undraw();
 
-    const rightRight = current.some(index => [currentPosition + index] % width === width -1);
-    console.log(rightRight)
-
-    if (!rightRight) currentPosition +=1;
+    // if any of the shape of the current tetrimino has riched to an index when divided by 10 will give 9 as a remainder
+    const rightEdge = current.some(index => [currentPosition + index] % width === width -1);
+    console.log(rightEdge)
+    
+    if (!rightEdge) currentPosition +=1;
 
     if (current.some(index => squares[currentPosition + index].classList.contains(`taken`))) {
         let comfarm = currentPosition -=1;
@@ -154,3 +137,39 @@ function moveRight() {
 
     draw()
 }
+
+// rotate function
+function rotate() {
+    undraw();
+    currentRotation ++;
+
+    if (currentRotation === current.length) {
+        currentRotation = 0;
+    }
+    current = theTetrominoes[random][currentRotation]
+    draw()
+}
+
+// stoping at the bottom of the game board
+function stopWhenTouchAnother() {
+    // same as current random choice if some of its index inside the whole array that forms the tetriminoes
+    // postion of 4 + its index + 10 will have a class of taken.
+    if (current.some(index => squares[currentPosition + index + width].classList.contains(`taken`))) {
+        // if the condition is true, so convert all the whole index to a class of taken.
+        current.forEach(index => squares[currentPosition + index].classList.add(`taken`))
+        // current.forEach(index => squares[currentPosition + index].style.background = `orange`)
+
+        // start a new tetrimino by making a random selection
+        random = Math.floor(Math.random() * theTetrominoes.length);
+        // same as current = const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
+        // postion of random selection postion of 0
+        current = theTetrominoes[random][currentRotation]
+        currentPosition = 4
+        draw()
+    }
+
+}
+draw()
+
+
+
