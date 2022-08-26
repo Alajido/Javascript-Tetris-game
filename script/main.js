@@ -78,27 +78,36 @@ function undraw() {
     })
 }
 
-
+// keyboard control function
 function control(e) {
+    // left key code
     if (e.keyCode === 37) {
         moveLeft()
+        // down key code
     } else if (e.keyCode === 38) {
         rotate()
+        // right key code
     } else if (e.keyCode === 39) {
         moveRight()
+        // left key code
     } else if (e.keyCode === 40) {
         moveDown()
     }
 }
+// listen to the keyboard press
 document.addEventListener(`keyup`, control)
 
 function moveDown() {
+    // undraw the shape from the position it was
     undraw()
+    // add 10 to the current position so that it moves down 
     let see = currentPosition += width;
     // add 10 to each position so that the current position will be incrementing each after undrawing the shape.
     draw() 
+    // if it reached the last array, then stop
     stopWhenTouchAnother() 
 }
+// move down every 1 sec
 const timing = setInterval(moveDown, 1000);
 
 
@@ -140,12 +149,16 @@ function moveRight() {
 
 // rotate function
 function rotate() {
+    // undraw the current shape
     undraw();
-    currentRotation ++;
 
+    // change the current rotation from 0 to be incrementing by one inside the current random array
+    currentRotation ++;
+    // chech if the current rotation has reached to the final shape of the current random choice and return to the first index of the array
     if (currentRotation === current.length) {
         currentRotation = 0;
-    }
+    };
+    // draw the current shape
     current = theTetrominoes[random][currentRotation]
     draw()
 }
@@ -169,7 +182,7 @@ function stopWhenTouchAnother() {
     }
 
 }
-draw()
+
 
 
 
