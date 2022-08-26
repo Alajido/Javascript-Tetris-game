@@ -4,8 +4,11 @@ const grid = document.querySelector(`.grid`);
 const squares = Array.from(document.querySelectorAll(`.grid div`));
 // the width variable
 const width = 10;
-
-console.log(squares)
+// squares.forEach(value => {
+//     if (value.classList.contains(`taken`)) {
+//         value.style.background = 'red'
+//     }
+// })
 
 // all the tetrominoes shapes
 const lTetromino = [
@@ -55,7 +58,7 @@ let currentRotation = 0
 let random = Math.floor(Math.random() * theTetrominoes.length);
 // if the random vallue is 4, so we get the iTetrominoes array value of index 0, since current rotation is set to 0
 let current = theTetrominoes[random][currentRotation];
-console.log(current)
+console.log(current.length)
 
 // function that draw our shapes and add a classlist of tetromino to show a background color
 function draw() {
@@ -74,12 +77,11 @@ function undraw() {
 
 // for testing purpose
 // draw()
-//const timing = setInterval(moveDown, 1000);
+const timing = setInterval(moveDown, 1000);
 
 function moveDown() {
     undraw()
     let see = currentPosition += width;
-
     // add 10 to each position so that the current position will be incrementing each after undrawing the shape.
     draw() 
     stopWhenTouchAnother() 
@@ -123,16 +125,19 @@ function moveLeft() {
     undraw();
 
     const leftEdge = current.some(index => [currentPosition + index] % width === 0);
-
+    console.log(leftEdge)
     if (!leftEdge) currentPosition -=1;
 
     if (current.some(index => squares[currentPosition + index].classList.contains(`taken`))) {
-        currentPosition +=1
+        // index.style.background = 'yellow'
+        let check = currentPosition +=1
+        console.log(check)
     }
     
     draw()
 }
 
+// move right function
 function moveRight() {
     undraw();
 
@@ -142,7 +147,9 @@ function moveRight() {
     if (!rightRight) currentPosition +=1;
 
     if (current.some(index => squares[currentPosition + index].classList.contains(`taken`))) {
-        currentPosition -=1;
+        let comfarm = currentPosition -=1;
+        console.log(comfarm)
+        // index.style.background = 'pink'
     }
 
     draw()
