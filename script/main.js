@@ -1,14 +1,19 @@
 // variable that hold the entire grid that contain all the div elements
-const grid = document.querySelector(`.grid`);
+let grid = document.querySelector(`.grid`);
 // variable that holds all the grid element and convert them into an array 
 const squares = Array.from(document.querySelectorAll(`.grid div`));
-// the width variable
+// the width of the whole shape i.e from 0 - 9 making it 10
 const width = 10;
 squares.forEach(value => {
     if (value.classList.contains(`taken`)) {
-        value.style.background = 'red'
+        value.style.background = 'orange'
     }
 })
+let btn = document.querySelector(`#btn`);
+let displayScore = document.querySelector(`#score`)
+let score = 0
+let timing;
+let randomShape = 0;
 
 // all the tetrominoes shapes
 const lTetromino = [
@@ -49,7 +54,8 @@ const iTetromino = [
 
 // put all the shapes inside an array
 const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
-// this hold the current position of all the shapes from the top
+// this hold the current position in which we want the shape to be displaying from the top
+// i.e 0,1,2,3, and 4
 let currentPosition = 4;
 // variable that will hold all the tetrominoes shape index of 0 i.e the first shape of all the the tetrominoes
 let currentRotation = 0
@@ -59,14 +65,15 @@ let currentRotation = 0
 let random = Math.floor(Math.random() * theTetrominoes.length);
 // if the random vallue is 4, so we get the iTetrominoes array value of index 0, since current rotation is set to 0
 let current = theTetrominoes[random][currentRotation];
-console.log(current.length)
+// console.log(current.length)
 
 // function that draw our shapes and add a classlist of tetromino to show a background color
 function draw() {
     // loop throw all the index of random selection
     current.forEach(index => {
         // iterate all the array grid and start counting from index of number four and be adding four to each index
-        squares[currentPosition + index].classList.add(`tetromino`)
+        squares[currentPosition + index].classList.add(`tetromino`);
+        
     })
    
 };
@@ -108,7 +115,7 @@ function moveDown() {
     stopWhenTouchAnother() 
 }
 // move down every 1 sec
-const timing = setInterval(moveDown, 1000);
+// timing = setInterval(moveDown, 1000);
 
 
 // move left function
@@ -122,7 +129,7 @@ function moveLeft() {
     if (current.some(index => squares[currentPosition + index].classList.contains(`taken`))) {
         // index.style.background = 'yellow'
         let check = currentPosition +=1
-        console.log(check)
+        // console.log(check)
     }
     
     draw()
@@ -171,18 +178,89 @@ function stopWhenTouchAnother() {
         // if the condition is true, so convert all the whole index to a class of taken.
         current.forEach(index => squares[currentPosition + index].classList.add(`taken`))
         // current.forEach(index => squares[currentPosition + index].style.background = `orange`)
-
+       
+        random = randomShape
+        
         // start a new tetrimino by making a random selection
-        random = Math.floor(Math.random() * theTetrominoes.length);
+        randomShape = Math.floor(Math.random() * theTetrominoes.length);
+        console.log(randomShape)
+        console.log(random)
         // same as current = const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
         // postion of random selection postion of 0
         current = theTetrominoes[random][currentRotation]
         currentPosition = 4
         draw()
+
+        displayShapes()
+
+        addScore()
+
     }
 
 }
 
 
+// the display shape module
+const displayMiniShapes = document.querySelectorAll(`.display-shape-grade div`);
+const displayWidth = 4;
+let displayIndex = 0;
+
+const upNextTetrominoes = [
+    [1, displayWidth+1, displayWidth*2+1, 2], // lTetrimino
+    [0, displayWidth, displayWidth+1, displayWidth*2+1], // zTetrimino
+    [1, displayWidth, displayWidth+1, displayWidth+2], //tTetrimino
+    [0, 1, displayWidth, displayWidth+1], // oTetrimoni
+    [1, displayWidth+1, displayWidth*2+1, displayWidth*3+1] // itetrimino
+]
 
 
+function displayShapes() {
+    displayMiniShapes.forEach(index => {
+        index.classList.remove(`tetromino`);
+        // console.log(displayMiniShapes)
+    });
+    // displayMiniShapes.forEach(index => {
+    //    if (index.classList.contains(`tetromino`)) {
+    //     index.style.background = `black`
+    //    }
+    // })
+
+    upNextTetrominoes[randomShape].forEach(index => {
+        displayMiniShapes[displayIndex  + index].classList.add(`tetromino`)
+        // console.log(displayMiniShapes)
+    })
+
+}
+
+btn.addEventListener(`click`, () => {
+    if (timing) {
+        clearInterval(timing);
+        timing = null;
+        // console.log(timing)
+    } else {
+        draw();
+        timing = setInterval(moveDown, 1000);
+        // console.log(timing)
+        random = Math.floor(Math.random() * theTetrominoes.length);
+        displayShapes()
+    }
+})
+
+
+function addScore() {
+    for (let i = 0; i < 199; i += width) {
+        const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
+
+        if (row.every(index => squares[index].classList.contains(`taken`))) {
+            score += 10
+            displayScore.innerHTML = score
+            row.forEach(index => {
+                squares[index].classList.remove(`taken`)
+                squares[index].classList.remove(`tetromino`)
+            })
+            const removeSquare = squares.splice(i, width)
+            removeSquare.concat(squares)
+            squares.forEach(cell => grid.appendChild(cell))
+        }
+    }
+}

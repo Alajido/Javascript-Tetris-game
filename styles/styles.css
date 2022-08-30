@@ -1,18 +1,28 @@
+.container {
+    border: 1px solid green;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* justify-content: center; */
+}
+
 .grid {
     display: flex;
     flex-wrap: wrap;
+    width: 300px;
+    /* height: 200px; */
+    /* border: 1px solid green; */
+    /* border: 1px solid gray; */
+    background-color: hotpink;
     margin-left: auto;
     margin-right: auto;
-    width: 340px;
-    height: 640px;
-    /* background-color: red; */
 }
 
 .grid div {
     /* background-color: green; */
     width: 30px;
     height: 30px;
-    border: 0.5px solid gray;
+    /* border: 0.5px solid gray; */
     color: blue;
 }
 
@@ -22,4 +32,31 @@
 
 .pink {
     background-color: pink;
+}
+
+.display-shape-grade {
+    display: flex;
+    flex-wrap: wrap;
+    width: 90px;
+    height: 80px;
+    margin-bottom: 20px;
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.display-shape-grade div {
+    width: 20px;
+    height: 20px;
+
+}
+
+@media screen and (min-width: 470px){
+    .container {
+       display: flex;
+    }
+
+    .grid {
+     
+    }
 }
